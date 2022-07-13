@@ -1,16 +1,11 @@
-/*
-Driver A4988 which has 200 steps per revolution
-        so, per step = 200/360  = 1.8° while Resulution Full Step.
-currently using only two switch for controlling the tunning in "single" direcetion
-        ~either dirPin = HIGH or  dirPin = LOW ~
-*/
-
 const int enablePin = 3;
 const int stepPin = 4;
 const int dirPin = 5;
 const int scanSwitch = 8;
 const int tuneSwitch = 9;
 const int ledPin = 13;
+int tuneState = 0;
+int scanState = 0;
 
 
 void setup() {
@@ -19,7 +14,7 @@ void setup() {
   pinMode(enablePin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
-  pinMode(scanSwitch, INPUT);
+  pinMode(tuneSwitch, INPUT);
   pinMode(scanSwitch, INPUT);
 
 }
@@ -38,15 +33,17 @@ void Tunning(int Delay, int Rotation){
 
 void loop() {
   digitalWrite(enablePin, HIGH);
-
-  if(tuneSwitch == HIGH){
+  tuneState = digitalRead(tuneSwitch);
+  scanState = digitalRead(scanSwitch);
+  if(tuneState == HIGH){
     digitalWrite(dirPin, LOW);
-    Tunning(1500,200);
+    Tunning(10000,1);
+    
   }
   
-  while(scanSwitch == HIGH) {
-    digitalWrite(dirPin, LOW);
-    Tunning(1000,16);
+  if(scanState == HIGH) {
+    digitalWrite(dirPin, HIGH);
+    Tunning(10000,1);
   }
 
 }
